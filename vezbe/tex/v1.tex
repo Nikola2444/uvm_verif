@@ -769,18 +769,14 @@ Funkcija \emph{compare\(\_\)values} poredi dva prosleđena argumenta.
 
 \section{Pokretanje simulacije}
 
-Za simulaciju će se koristiti alat QuestaSim, razvijen od strane Mentor
-Graphics-a. QuestaSim je poslednji alat od Mentor Graphics-a za funkcionalnu
-verifikaciju. Podržava simulaciju najnovijih standarda za SystemVerilog,
-SystemC, Verilog 2001 i VHDL. Predstavlja nadogradnju ModelSim-a i pruža podršku
-za napredne verifikacione koncepte koje ModelSim ne podržava. Npr. verifikacija
-vođena sakupljanjem pokrivenosti (engl. \emph{coverage driven verification}),
-rad sa \emph{assertion}-ima i puno korišćenje mogućnosti SystemVerilog-a u
-pogledu randomizacije i ograničenja.\\
+Za simulaciju će se koristiti alat Incisive Enterprise Simulator,
+razvijen od strane kompanije Cadence. Incisive Enterprise Simulator podržava
+simulaciju najnovijih standarda za SystemVerilog, SystemC, Verilog 2001 i VHDL.
+Takođe on omogućava verifikaciju vođenu sakupljanjem pokrivenosti (engl. \emph{coverage driven verification}),
+rad sa \emph{assertion}-ima i puno korišćenje mogućnosti SystemVerilog-a u pogledu randomizacije i ograničenja.\\
 
-U QuestaSim-u se osnovna simulacija vrši prateći \emph{flow} prikazan na slici
-\ref{fig:questa_flow}.
-Potrebni koraci su:
+Incisive Enterprise Simulator vrši simulaciju prateći sledeće
+korake:
 \begin{enumerate}
 \item mapiranje biblioteka
 \item kompajliranje
@@ -794,174 +790,159 @@ Napomena: optimizacija u trećem koraku može znatno ograničiti mogućnosti
 \emph{debug}-a, ali ubrzati simulaciju i uštedeti na memorijskom prostoru, pa se
 zato mora pažljivo koristiti.\\
 
+%\begin{figure}[h!]
+ % \center
+%  \includegraphics[width=90mm, scale=0.5]{img/v1_flow.png}
+ % \caption{QuestaSim flow}
+%  \label{fig:questa_flow}
+%\end{figure}
+
+Kako bi se prethodni koraci uspešno izvršili neophodno je koristiti pod-alate unutar
+Incisive Enterprise simulatora (ncvlog, ncelab, ncsim, itd). Takođe neophodno je napraviti
+pravilnu strukturu direktorijuma kako bi prethodno pomenuti pod-alati mogli da odrade kompajliranje,
+elaboraciju i simulaciju (slika \ref{fig:design_directory_structure}).
+
+
+
 \begin{figure}[h!]
   \center
-  \includegraphics[width=90mm, scale=0.5]{img/v1_flow.png}
-  \caption{QuestaSim flow}
-  \label{fig:questa_flow}
+  \includegraphics[width=90mm, scale=0.5]{img/v1_design_hierarchy.png}
+  \caption{Design directory structure}
+  \label{fig:design_directory_structure}
 \end{figure}
 
-Za sve navedene korake postoje komande u Questasim-u (\emph{vlib, vlog, vsim,}
-...).
-Najčešće se komande grupišu u skriptu radi lakše upotrebe, ali je moguće unositi
-ih direktno u terminal ili koristiti GUI.
-U nastavku je dat opis komandi potrebnih za današnje vežbe.
+Incsisive Enterprise Simulator to olakšava pomoću \emph{irun} alata
+koja omogućava izvršavanje svih prethodnih koraka pomoću jedne naredbe u komandnom prozoru i
+on će biti korišćen prilikom izvođenja vežbi.
+Za zainteresovane na sledećem linku dato je uputstvo kako izvršiti kompajliranje, elaboraciju i simulaciju bez
+korišćenja \emph{irun} alata:\\
+\url{https://www.elektronika.ftn.uns.ac.rs/racunarsko-projektovanje-digitalnih-integrisanih-kola/wp-content/uploads/sites/111/2018/03/Slo\%c5\%beena-digitalna-kola-dizajn-i-verifikacija.pdf}.\\
+
+
+\emph{Napomena}: Kako bi mogli da se koriste alati koje sadrži Incisive Enterprise Simulator neophodno
+je u Linux terminalu ukucati sledeću komandu: \textbf{source amsgo}. Ovo važi samo za Centos
+operativni sistem koji se koristi na računarima u laboratorijama u kojima se izvode vežbe.
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Biblioteke}
-
-Pre kompajliranja sors koda, mora se kreirati biblioteka u kojoj će se čuvati
-svi kompajlirani fajlovi. Obično se biblioteka zove \emph{work} i ukoliko se
-eksplicitno ne navede naziv podrazumeva se \emph{work}.
-
-\begin{itemize}
-\item GUI: File \(\rightarrow\) New \(\rightarrow\) Library
-\item CLI: vlib \textless lib\(\_\)name\textgreater
-\end{itemize}
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Kompajliranje}
+\subsection{Kompajliranje, simulacija}
 
-Za kompajliranje dizajna postoje različite komande na osnovu jezika u kome je
-implementiran.
-
-\begin{itemize}
-\item GUI: Compile \(\rightarrow\) Compile
-\item CLI: vlog (Verilog), vcom (VHDL), sscom (SystemC) praćeno listom fajlova
-\end{itemize}
-
-Za kompajliranje SystemVerilog fajlova se takođe koristi naredba \emph{vlog},
-ali uz -sv argument. Npr.:
+Unutar pratećeg materijala za ovu vežbu nalaze se dva fajla (v1\(\_\)counter.sv i v1\(\_\)simple\(\_\)tb.sv)
+i oni će biće korišćeni kako bi se ilustrovalo kompajliranje i simulacija. Sve što je neophodno uraditi
+jeste otvoriti linux terminal, navesti putanju do direktorijuma u kome se nalaze fajlovi i ukucati sledeće:
 
 \begin{lstlisting}[language=Python]
-vlog -sv counter.sv simple_tb.sv
+irun v1_counter.sv v1_simple_tb.sv 
 \end{lstlisting}
 
-Korisni argumenti su i -work \textless ime\(\_\)biblioteke\textgreater kako bi
-se rezultati smeštali u željenu biblioteku, +incdir+\textless
-ime\(\_\)direktorijuma\textgreater za uključivanje dodatnog foldera i +acc kako
-bi se omogućio pristup svim signalima u dizajnu.\\
 
-Prilikom kompajliranja QuestaSim vrši ispis svih kompajliranih modula, ali i
-navodi ime top modula.
-Taj top modul ćemo koristiti za simulaciju u narednom koraku.
-Na primer:
+Iz prethodne linije može se videti da je nakon \emph{irun} komande neophodno navesti
+sve fajlove koji se kompajliraju. 
 
-\begin{verbatim}
-# QuestaSim vlog ...
-# -- Compiling module counter
-# -- Compiling module simple_tb
-#
-# Top level modules:
-#        simple_tb
-\end{verbatim}
-
-%----------------------------------------------------------------------------------------
-
-\subsection{Simulacija}
-
-Učitavanje u simulator:
-\begin{itemize}
-\item GUI: Simulate \(\rightarrow\) Start simulation
-\item CLI: vsim \textless top\(\_\)name\textgreater
-\end{itemize}
-
-Simulatoru se prosleđuje ime top modula koji želimo da simuliramo.\\
-
-Kada se dizajn učita u simulator, simulaciono vreme je nula i čeka se na dalje
-komande za pokretanje simulacije.
-Ovo se vrši naredbom \emph{run}.
-Moguće je pustiti simulaciju do kraja ili na određeni vremenski period.
+Ukoliko je sve sintaksno korektno u terminalu će se ispisati rezultati
+kompajliranja, elaboracije i simulacije. Dodatno, moguće je otvoriti simulator u GUI režimu
+dodavanjem -gui opcije u prethodnu \emph{irun} komandu:
 
 \begin{lstlisting}[language=Python]
-run -all
-run 10us
+irun v1_counter.sv v1_simple_tb.sv -gui
 \end{lstlisting}
 
-%----------------------------------------------------------------------------------------
+Kada se izvrši ova komanda otvoriće se dva prozora: Design Browser-SimVision i Console-SimVision.
 
-\subsection{Naredba do}
-
-Korisna naredba u QuestaSim-u je \emph{do} koja služi za izvršavanje naredbi iz
-fajla.
-Da bi se ubrzao proces kompilacije i simulacije, obično se ove komande grupišu u
-skriptu koju je tada lako pozivati iz alata (komentari započinju simbolom
-``\(\#\)'').
-Za prethodni primer testbenča:
-
-% Note: nije python, ali dobro oboji :)
-\lstinputlisting[language=Python, caption=do fajl, label=lst:do_fajl]{code/v1_run.do}
-
-Kako bi smo izvršili ove naredbe, potrebno je u Questi pozvati
-\begin{lstlisting}[language=Python]
-do <ime_fajla>
-\end{lstlisting}
-
+\emph{Napomena}: Da bi se promene izvornih fajlova videle kada je simulator otvoren u GUI režimu neophodno
+je u Console-Simvision prozoru odabrati sledeću opciju: Simulation \(\rightarrow\) Reinvoke Simulator
 %----------------------------------------------------------------------------------------
 
 \subsection{Debug}
 
-QuestaSim pruža veliki broj alata za analizu i debug dizajna.
+Incisive Enterprise Simulator pruža veliki broj alata za analizu i debug dizajna.
 Oni uključuju gledanje \emph{waveform}-a, postavljanje \emph{breakpoint}-a,
-analizu povezanosti, praćenje pokrivenosti, ...
+analizu povezanosti, praćenje pokrivenosti.
 Većina će biti pokazana u narednim vežbama, dok ćemo se ovde, zbog
 jednostavnosti primera, zadržati na gledanju \emph{waveform}-a.\\
+Da bi se to omogućilo neophodno je prilikom kompajliranja navesti dodatni argument, kao što je
+prikazano u nastavku.
 
-\emph{Waveform}-i se prikazuju u tzv. \emph{wave} prozoru koji se aktivira sa
-naredbom:
+\begin{lstlisting}[language=Python]
+irun v1_counter.sv v1_simple_tb.sv -gui -access +rwc
+\end{lstlisting}
+
+Pomoću opcije -access kontroliše se pristup za ceo dizajn, i ona može da ima sledeće argumente:
 \begin{itemize}
-\item GUI: View \(\rightarrow\) Wave
-\item CLI: view wave
+\item \emph{r}: omogućava simulatoru da vidi interne signale.
+\item \emph{w}: omogućava promenu stanja određenih signala za vreme simulacija pomoću force ili deposit komandi.
+\item \emph{c}: omogućava povezivanje.
 \end{itemize}
+U našem slučaju iskorišćena su sva 3 argumenta (-access +rwc).
 
-Dodavanje signala se može izvršiti na nekoliko načina:
+Nakon što se prethodna komanda izvrši otvoriće se simulator u GUI modu i 
+dodavanje signala koje želimo da analiziramo se može izvršiti na nekoliko načina:
 \begin{itemize}
-\item iz glavnog prozora, desnim klikom na željeni objekat i odabrati Add
-  \(\rightarrow\) To Wave \(\rightarrow\) .... Poslednji korak su opcije koje
-  označavaju opseg signala koje želimo da dodamo
+\item iz glavnog prozora, desnim klikom na željeni objekat i odabrati send
+to Waveform Window
 \item dodavanjem pojedinačnih signala iz \emph{Objects} prozora na isti način
-\item \emph{drag and drop}
-\item komandom ``add wave \textless putanja\textgreater'' (podržava
-  \emph{wildcard} ``*'' za dodavanje više signala)
+\item \emph{drag and drop}. Ukoliko Waveform prozor nije otvoren, otvoriti ga pritiskom na Waveform dugme (slika \ref{fig:Waveform_dugme})
 \end{itemize}
+
+\begin{figure}[h!]
+  \center
+  \includegraphics[width=60mm, scale=0.5]{img/v1_waveform_dugme.png}
+  \caption{Waveform dugme}
+  \label{fig:Waveform_dugme}
+\end{figure}
+
 
 Nakon učitavanja željenih signala, iz \emph{toolbar}-a je lako puštati
 simulaciju.
 Simulacija se može puštati do kraja ili određeni vremenski period, može se
-prekidati, nastavljati, restartovati itd. (slika \ref{fig:questa_toolbar_run}).\\
+prekidati, nastavljati, restartovati itd. (slika \ref{fig:Incisive_Enterprise_simulator_run_toolbar}).\\
 
 \begin{figure}[h!]
   \center
-  \includegraphics[width=60mm, scale=0.5]{img/v1_toolbar_run.png}
-  \caption{QuestaSim run toolbar}
-  \label{fig:questa_toolbar_run}
+  \includegraphics[width=60mm, scale=0.5]{img/v1_Incisive_Enterprise_Simulator_toolbar.png}
+  \caption{Incisive Enterprise simulator run toolbar}
+  \label{fig:Incisive_Enterprise_simulator_run_toolbar}
 \end{figure}
 
-Analizu signala olakšava zumiranje, praćenje ivica, praćenje kursora koji se
-takođe lako kontorlišu iz \emph{toolbar}-a (slika
-\ref{fig:questa_toolbar_zoom})\\
-
-\begin{figure}[h!]
-  \center
-  \includegraphics[width=60mm, scale=0.5]{img/v1_toolbar_zoom.png}
-  \caption{QuestaSim zoom toolbar}
-  \label{fig:questa_toolbar_zoom}
-\end{figure}
 
 Nakon ubacivanja signala u \emph{wave} prozor i svih dodatnih podešavanja,
-moguće je sačuvati sva podešavanja u \emph{do} fajl.
-Podrazumevano ime je ``wave.do'' i izvršava se kao i svi \emph{do} fajlovi:
+moguće je sačuvati sva podešavanja u \emph{tcl} fajl. To se radi pritiskom na \emph{file}
+opciju i odabirom \emph{Save Command Script}.
+Podrazumevano ime je ``restore.tcl''. Ukoliko se ovo uradi prilikom sledećeg
+pokretanja simulatora neohpodno je proširiti \emph{irun} komandu na sledeći
+način kako bi se prethodna podešavanja učitala:
 
 \begin{lstlisting}[language=Python]
-do wave.do 
+irun v1_counter.sv v1_simple_tb.sv -gui -access +rwc -input restore.tcl
 \end{lstlisting}
 
 QuestaSim pruža velike mogućnosti rada sa \emph{waveform}-ima, uključujući i
 poređenje signala, čuvanje podešavanja za buduću upotrebu, merenje vremena, ...
 Za detaljan opis svih mogućnosti konsultovati \emph{User Manual}, koji se može
-naći u QuestaSim-u (Help \(\rightarrow\) Questa Documentation).
+naći u simulatoru (Help \(\rightarrow\) Cadence Help library).
+
+\subsection{Build file}
+
+Prilikom pokretanja \emph{irun} komandi broj opcija, argumenata i fajlova koji mogu da se proslede
+može da postane veliki, te će pisanje \emph{irun} komande svaki put kada se vrši kompajliranje
+postati zamorno. Kako bi se to olakšalo, sve naredbe mogu se grupisati u \emph{.f} skriptu, kao što
+je prikazano u nastavku:
+
+\begin{lstlisting}[language=Python]
+v1_counter.sv
+v1_simple_tb.sv
+-gui -access +rwc -input restore.tcl
+\end{lstlisting}
+
+Sada se kompajliranje može obaviti kucanjem sledećeg:
+
+\begin{lstlisting}[language=Python]
+irun -f ime_fajla.f
+\end{lstlisting}
+
 
 %========================================================================================
 % Section
