@@ -549,27 +549,49 @@ Npr. ukoliko je pronađena greška koja se javlja jedino pri određenom
 \emph{seed}-u (odnosno jedino pri određenoj kombinaciji nasumičnih vrednosti u
 testu), potrebno je da se ona repordukuje, ali i proveri nakon ispravke.\\
 
-Podešavanje \emph{seed}-a u QuestaSim-u se vrši prilikom startovanja simulacije,
+Podešavanje \emph{seed}-a u Incisive Enterprise simulator-u se vrši prilikom startovanja simulacije,
 prosleđivanjem \emph{sv\(\_\)seed} argumenta praćenom vrednosti \emph{seed}-a.
 Ta vrednost može biti bilo koji integer ili reč \emph{random} ukoliko želimo da
 se \emph{seed} nasumično odabere. Npr:
 
 \begin{lstlisting}[language=Python]
-vsim top_module -sv_seed 5
-vsim top_module -sv_seed random
+irun top_module.sv -svseed 5
+irun top_module.sv -svseed random
 \end{lstlisting}
 
-Prilikom korišćenja random \emph{seed}-a, QuestaSim će ispisati koja je vrednost
-odabrana, kako bismo mogli da sačuvamo tu informaciju ukoliko nam bude potrebna.
+Prilikom korišćenja random \emph{seed-a}, Incisive Enterprise simulator će ispisati koja je vrednost
+odabrana, kako bismo mogli da sačuvamo tu informaciju ukoliko nam bude potrebna.\\
 
-\begin{verbatim}
-VSIM > vsim top -sv_seed random
-# vsim -sv_seed random top
-# Loading sv_std.std
-# Loading work.randomization_example_sv_unit
-# Loading work.top(fast)
-# Sv_Seed = 1157871697
-\end{verbatim}
+Ukoliko se koristi simulator Vivado alata, neophodno je uraditi sledeće:
+\begin{figure}[h!]
+  \center
+  \includegraphics[width=150mm, scale=0.5]{img/v4_vivado_settings.png}
+  \caption{vivado settings}
+  \label{fig:vivado_settings}
+\end{figure}
+\newpage
+
+Odabirom opcije settings kao što je prikazano na slici \ref{fig:vivado_settings} otvara se
+prozor prikazan na slici \ref{fig:vivado_simulation_settings}
+
+\begin{figure}[h!]
+  \center
+  \includegraphics[width=90mm, scale=0.5]{img/v4_vivado_simulation_settings.png}
+  \caption{vivado simulation settings}
+  \label{fig:vivado_simulation_settings}
+\end{figure}
+
+Odabrati opcije prikazane crvenim strelicama,
+i u polje \emph{xsim.simulate.xsim.more\_options} upisati:
+
+\begin{lstlisting}[language=Python]
+-sv_seed <broj_seed-a> 
+\end{lstlisting}
+Napomena: Ukoliko je simulacija prethodno pokrenuta, i  ponovo je izvršena promena \emph{seed-a}, neophodno je
+zatvoriti simulacioni prozor i ponovo pokrenuti simulaciju.
+
+
+
 
 %========================================================================================
 % Section
