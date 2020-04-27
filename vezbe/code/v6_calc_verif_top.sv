@@ -3,7 +3,7 @@ module calc_verif_top;
    import uvm_pkg::*;     // import the UVM library
 `include "uvm_macros.svh" // Include the UVM macros
 
-   import calc_verif_pkg::*;
+   import calc_test_pkg::*;
 
    logic clk;
    logic [6 : 0] rst;

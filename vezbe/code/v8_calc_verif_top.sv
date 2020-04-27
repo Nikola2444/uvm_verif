@@ -3,7 +3,7 @@ module calc_verif_top;
    import uvm_pkg::*;     // import the UVM library
 `include "uvm_macros.svh" // Include the UVM macros
 
-   import calc_verif_pkg::*;
+   import calc_test_pkg::*;
 
    logic clk;
    logic [6 : 0] rst;
@@ -33,6 +33,7 @@ module calc_verif_top;
                 .req4_data_in ( calc_vif.req4_data_in )
                 );
 
+   // run test
    initial begin
       uvm_config_db#(virtual calc_if)::set(null, "*", "calc_if", calc_vif);
       run_test();

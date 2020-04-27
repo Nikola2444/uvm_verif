@@ -12,7 +12,10 @@ class test_simple_2 extends test_base;
    function void build_phase(uvm_phase phase);
       super.build_phase(phase);
 
-      uvm_config_db#(uvm_object_wrapper)::set(this, "seqr.main_phase","default_sequence",calc_simple_seq::type_id::get());
+      uvm_config_db#(uvm_object_wrapper)::set(this,
+                                              "seqr.main_phase",
+                                              "default_sequence",
+                                              calc_simple_seq::type_id::get());
    endfunction : build_phase
 
 endclass
