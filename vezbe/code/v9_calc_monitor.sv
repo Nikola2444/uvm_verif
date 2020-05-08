@@ -21,14 +21,14 @@ class calc_monitor extends uvm_monitor;
    // ...
 
    function new(string name = "calc_monitor", uvm_component parent = null);
-      super.new(name,parent);
+      super.new(name,parent);      
       item_collected_port = new("item_collected_port", this);
    endfunction
 
    function void connect_phase(uvm_phase phase);
       super.connect_phase(phase);
-      if (!uvm_config_db#(virtual calc_if)::get(this, "*", "calc_if", vif))
-        `uvm_fatal("NO_IF",{"virtual interface must be set:",get_full_name(),".vif"})
+      if (!uvm_config_db#(virtual calc_if)::get(this, "", "calc_if", vif))
+        `uvm_fatal("NOVIF",{"virtual interface must be set:",get_full_name(),".vif"})
    endfunction : connect_phase
 
    task main_phase(uvm_phase phase);
