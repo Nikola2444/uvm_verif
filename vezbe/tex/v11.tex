@@ -575,90 +575,66 @@ opcija nije postavljena na 1.
 % Section
 %========================================================================================
 
-\section{\emph{Coverage} u QuestaSim-u}
+\section{\emph{Coverage} u Vivadu}
 
-U ovom poglavlju su opisane komande u QuestaSim alatu koje služe za prikupljanje
-pokrivenosti. Za detaljnije objašnjenje i napredne opcije alata pogledati
-odgovarajuće poglavlje u QuestaSim User ili Reference Manual-u.\\
-
-Kako bi se prikupljali podaci o strukturnoj pokrivenosti potrebno je odabrati
-tip ove pokrivenosti koji želimo da prikupljamo, a zatim uključiti mehanizam
-prilikom pokretanja simulacije. Rezultati se mogu analizirati tokom simulacije,
-ali se i podaci mogu sačuvati za naknadnu analizu.\\
-
-Klasičan \emph{flow} prikupljanja i analize pokrivenosti je sledeći:
-
-\begin{enumerate}
-
-\item Kompajlirati dizajn i odabrati tipove pokrivenosti koje želimo da
-  prikupljamo: \emph{vlog (vcom)} naredba kompajlira date fajlove, a \emph{vopt}
-  vrši globalnu analizu i optimizaciju. \emph{-o} specificira ime optimizovane
-  verzije, a \emph{+cover} govori da treba prikupljati sve tipove pokrivenosti
-  (moguće je prikupljati samo određene tipove, samo za pojedine blokove itd. Za
-  detalje pogledati \emph{User Manual}). Npr:
-  \begin{lstlisting}[language=Python]
-vlog top.v
-vopt top -o opttop +cover
+U ovom poglavlju su opisane komande u Vivado alatu koje služe za prikupljanje pokrivenosti. Izveštaj
+o pokrivenosti generuše xcrg (\emph{Xilinx Coverage Report Generator}) alat i da bi on to uradio
+neophodno je nakon izvršene simulacije ukucati sledeću komandu u.tcl konzolu:
+\begin{lstlisting}
+  xcrg -report_format html -dir xcrg -report_format html -dir <putanja do xsim direktorijuma> -report_dir <putanja do direktorijuma gde ce izvestaj biti sacuvan>
 \end{lstlisting}
 
-\item Omogućiti prikupljanje tokom simulacije. Npr:
-  \begin{lstlisting}[language=Python]
-vsim -coverage opttop
+Prvi argument ``-report\(\_\)format'' specificira tip fajla u kome će se nalaziti izveštaj. U prethodnoj komandi taj tip je html, ali moglo je umesto toga
+da se napiše ``text'' da bi se izveštaj sačuvao u tekstualnom formatu (Radi preglednosti preporuka je da se koristi html format). Drugi argument,
+``-dir xcrg'', je putanja do direktorijuma u kome se nalaze rezultati simulacije. On se nalazi unutar .sim direktorijuma koji se može pronaći
+u direktorijumu Vivado projekta. Treći argumen ``report\(\_\)dir'' jeste putanja do lokacije na kojoj želite da sačuvate izveštaj. Sledeći primer ilustruje
+kako bi trebalo da izgleda prethodno opisana komanda:
+
+\begin{lstlisting}
+xcrg -report_format text -dir /home/nikola/Documents/saradnik/Funkcionalna_verifikacija/vivado_projects/v11_vivado_priprema/v11_vivado_priprema.sim/sim_1/behav/xsim -report_dir /home/nikola/Documents/  
 \end{lstlisting}
 
-\item Opciono sačuvati podatke za naknadnu analizu. Npr:
-  \begin{lstlisting}[language=Python]
-coverage save -onexit top.ucdb
-\end{lstlisting}
-
-\item Pokrenuti simulaciju: \emph{run -all}
-\end{enumerate}
-
-Nakon pokretanja simulacije prateći prethodno opisani \emph{flow}, podaci se
-mogu analizirati u \emph{Code Coverage Analysis}, \emph{Covergroups},
-\emph{Instance Coverage} i \emph{Coverage Details} prozorima. Ukoliko neki
-prozor nije otvoren, može se odabrati klikom na \emph{View \(\rightarrow\)
-  Coverage} i odabirom odgovarajućeg prozora.\\
-
-U \emph{Code Coverage Analysis} prozoru se mogu prikazivati različiti tipovi
-koristeći \emph{Analysis Type selector} (slika
-\ref{fig:questa_code_coverage_analysis}).
+Nakon što se ova .tcl komanda izvrši na zadatoj putanji će se pojaviti nekoliko fajlova. Najbitniji od njih jeste
+dashboard.html fajl koji kada se otvori prikazuje sledeće:
 
 \begin{figure}[h!]
   \center
-  \includegraphics[width=80mm, scale=0.5]{img/v11_questa_code_coverage_analysis.png}
-  \caption{Primer \emph{Code Coverage Analysis} prozora}
-  \label{fig:questa_code_coverage_analysis}
+  \includegraphics[width=150mm, scale=0.5]{img/v11_coverage_report_dashboard.png}
+  \caption{Sadržaj \emph{dashboard }fajla}
+  \label{fig:coverage_report_dashboard}
 \end{figure}
 
-Podaci i statitskia se takođe mogu videti u \emph{Object}, \emph{Source} i
-\emph{Structure} prozorima.
-Što se tiče praćenja funkcionalne pokrivenosti, podaci se mogu analizirati i u
-\emph{Covergroups} prozoru (slika \ref{fig:questa_covergroup_window})
+
+U njemu su prikazane informacije o verziji Vivado simulatora, pokrenutoj komandi, datumu, broju testova, itd. Iz tog prozora
+može da se pređe u Groups prozor (crvena strelica na slici \ref{fig:coverage_report_dashboard} ) u kome se nalazi spisak svih \emph{cover} grupa koje postoje
+u verifikacionom okruženju (slika \ref{fig:coverage_report_groups}). 
 
 \begin{figure}[h!]
   \center
-  \includegraphics[width=80mm, scale=0.5]{img/v11_simple_coverage.png}
-  \caption{Primer \emph{Covergroup} prozora}
-  \label{fig:questa_covergroup_window}
+  \includegraphics[width=150mm, scale=0.5]{img/v11_coverage_report_groups.png}
+  \caption{Sadržaj \emph{groups} fajla}
+  \label{fig:coverage_report_groups}
 \end{figure}
 
-Što se tiče izveštaja o statistici, mogu se generisati u različitim formatima:
-tekstualni ili HTML. Mogu sačuvati i sami podaci u UCDB fajlu kako bi se mogli
-ponovo učitati ili spajati sa podacima iz prethodnih simulacija. Ovaj korak se
-vrši prilikom regresije o kojoj će biti reči na naredoj vežbi.\\
-
-Generisanje izveštaja se vrši klikom na \emph{Tools \(\rightarrow\) Coverage
-  Reports} i odabirom željenog formata. HTML format se često koristi jer daje
-dobar vizuelni pregled i željeni podaci se lako pronalaze klikom na odgovarajuće
-blokove. Primer je dat na slici \ref{fig:questa_coverage_report}.
+Pritiskom na opciju označenu crvenom strelicom (\emph{simple\(\_\)coverage}) otvoriće se detaljan izveštaj o toj \emph{cover} grupi (slika \ref{fig:coverage_report_group_details})
 
 \begin{figure}[h!]
   \center
-  \includegraphics[width=\textwidth]{img/v11_questa_coverage_report.png}
-  \caption{Primer izveštaja}
-  \label{fig:questa_coverage_report}
+  \includegraphics[width=150mm, scale=0.5]{img/v11_coverage_report_group_details.png}
+  \caption{Sadržaj pojedinačnog \emph{group} fajla}
+  \label{fig:coverage_report_group_details}
 \end{figure}
+
+\pagebreak
+Dodatno, nakon što se otvori prozor prikazan na slici \ref{fig:coverage_report_group_details} moguće je sakriti ili okriti
+neke delove izveštaja pritiskom na opcije označene crvenom strelicom.
+
+\pagebreak
+Napomena: Poslednja verzija Vivado alata ne podržava analizu strukturalne pokrivenosti. Ukoliko je to neophodno, mora se iskoristiti
+neki drugi alat. Takođe, detaljnije informacije u tome kako se koristi xcrg alat možete pronaći u sledećim dokumentacijama:
+
+\url{https://www.xilinx.com/support/documentation/sw_manuals/xilinx2019_1/ug900-vivado-logic-simulation.pdf}.\\
+\url{https://www.xilinx.com/support/documentation/sw_manuals/xilinx2019_1/ug937-vivado-design-suite-simulation-tutorial.pdf}.\\
 
 %========================================================================================
 % Section

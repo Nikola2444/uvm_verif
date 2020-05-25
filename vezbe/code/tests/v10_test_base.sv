@@ -14,9 +14,9 @@ class test_base extends uvm_test;
 
    function void build_phase(uvm_phase phase);
       super.build_phase(phase);
-      env = calc_env::type_id::create("env", this);
-      cfg = calc_config::type_id::create("cfg");
-      uvm_config_db#(calc_config)::set(this, "*", "calc_config", cfg);
+      cfg = calc_config::type_id::create("cfg");      
+      uvm_config_db#(calc_config)::set(this, "env", "calc_config", cfg);      
+      env = calc_env::type_id::create("env", this);      
    endfunction : build_phase
 
    function void end_of_elaboration_phase(uvm_phase phase);

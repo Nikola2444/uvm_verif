@@ -12,3 +12,4 @@ class calc_sequencer extends uvm_sequencer#(calc_seq_item);
 endclass : calc_sequencer
 
 `endif
+
