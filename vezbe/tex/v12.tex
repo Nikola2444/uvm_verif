@@ -130,7 +130,7 @@ pokrivenost.
 
 % ----------------------------------------------------------------------------------------
 
-\subsection{Puštanje testova i spajanje podataka o pokrivenosti}
+\subsection{Puštanje testova}
 
 Glavni princip regresije je puštanje testova sa nasumično izabranim vrednostima
 \emph{seed}-a. Zbog broja testova i velike količine podataka koje treba
@@ -151,54 +151,16 @@ regresije:
 
 Kako bi se omogućilo puštanje testova sa nasumičnim vrednostima \emph{seed}-a,
 potrebno je proslediti tu informaciju prilikom pokretanja simulacije. U
-QuestaSim alatu se ovo radi na sledeći način:
+Incisive enterprise similator alatu se ovo radi na sledeći način:
 
 \begin{lstlisting}
-vsim top_module -sv_seed random <ostali_argumenti>
+irun top_module.sv -svseed random
 \end{lstlisting}
 
 Pošto je potrebno puštati velik broj testova, nije nužno imati otvoren GUI već
-se u praksi praktikuje puštanje simulacija iz komandne linije. U QuestaSim alatu
-se ovo radi uz ``-c'' ili ``-batch'' argument:
+se u praksi praktikuje puštanje simulacija iz komandne linije, odnosno prilikom
+pokretanja irun komande neophodno je izostaviti -gui parametar. 
 
-\begin{lstlisting}
-vsim -c top_module <ostali_argumenti>
-\end{lstlisting}
-
-Što se tiče prikupljanja podataka o pokrivenosti, QuestaSim alat koristi UCDB
-fajlove (engl. \emph{Unified Coverage DataBase}). U njima se čuvaju informacije
-o raznim vrstama podataka: različitim tipovima stukturne pokrivenosti, FSM
-pokrivenosti, SystemVerilog grupama, \emph{assertion} tvrđenjima, ... Podaci se
-u ovim fajlovima mogu čuvati prilikom eksplicitnog zahteva ili prilikom
-završetka simulacije:
-
-\begin{lstlisting}
-GUI: Tools -> Coverage Save
-CLI: coverage save top.ucdb
-     coverage save -onexit top.ucdb
-\end{lstlisting}
-
-Nakon puštanja testova potrebno je spojiti podatke o pokrivenosti iz različitih
-testova da bi se dobile konačne informacije o statistici.
-
-\begin{lstlisting}
-GUI: Verification Management Browser window
-CLI: vcover merge output inputA.ucdb inputB.ucdb
-\end{lstlisting}
-
-Prilikom korišćenja GUI: nakon otvaranja \emph{Verification Management Browser}
-prozora, potrebno je selektovati sve .ucdb fajlove za spajanje, a zatim desnim
-klikom odabrati opciju \emph{Merge}.
-Otvoriće se novi prozor u kome je moguće podesiti i dodatne opcije.\\
-
-Prilikom korišćenja CLI: primer komande iznad će spojiti inputA.ucdb i
-inputB.ucdb fajlove i rezultat upisati u output. Takođe je moguće proslediti i
-dodatne argumente.\\
-
-Za detaljniji opis svih mogućnosti alata pogledati odgovarajući \emph{User’s
-  Manual} (za verziju alata koja se koristi na vežbama informacije se mogu
-pronaći u poglavlju 25 - \emph{Coverage and Verification Management in the
-  UCDB}).
 
 %========================================================================================
 % Section
@@ -411,3 +373,10 @@ okruženje. Analizirati rezultate. Generisati podatke o pokrivenosti.
 \section{Appendix}
 
 \lstinputlisting[caption=v12\(\_\)gotchas\(\_\)examples, label=lst:v12_gotchas_examples]{code/v12_gotchas_examples.sv}
+
+
+
+
+
+
+
